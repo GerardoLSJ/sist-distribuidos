@@ -55,7 +55,7 @@ class Coordinador():
 		hilo = self.hilos[TID]
 		
 		hilo.start()
-		hilo.join()
+		#hilo.join()
 		
 		#print('cierraTransaccion',self.resultado)
 		if self.resultado == -1:
@@ -75,9 +75,14 @@ def main():
 	coordinador = Coordinador(1000)
 	coordinador.cierraTransaccion(coordinador.abreTransaccion("retirar", 50))
 	coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 50))
-	coordinador.cierraTransaccion(coordinador.abreTransaccion("incrementarSaldo",100))
-	coordinador.cierraTransaccion(coordinador.abreTransaccion("obtenerSaldo"))
-	coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 25))
+
+	# for i in range(100):
+	# 	coordinador.cierraTransaccion(coordinador.abreTransaccion("retirar", 1))
+	# 	coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 1))
+
+	# coordinador.cierraTransaccion(coordinador.abreTransaccion("incrementarSaldo",100))
+	# coordinador.cierraTransaccion(coordinador.abreTransaccion("obtenerSaldo"))
+	# coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 25))
 
 """
 	th1 = coordinador.abreTransaccion("incrementarSaldo", 100)
