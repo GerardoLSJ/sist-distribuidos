@@ -30,7 +30,7 @@ class Coordinador():
 
 	def abreTransaccion(self, funcion, args_p = None):
 		hilo = {}
-		#print(funcion,args_p)
+		print(funcion, args_p)
 		if funcion == "obtenerSaldo":
 			hilo = threading.Thread(target=self.obtenerSaldo)
 		
@@ -63,7 +63,7 @@ class Coordinador():
 		
 		else:
 			self.saldo = self.resultado
-			print "nuevo saldo: " + str(self.saldo)
+			print "nuevo saldo: " + str(self.saldo) + '\n'
 			del self.hilos[TID]
 
 	def abortaTransaccion(TID):
@@ -73,28 +73,12 @@ class Coordinador():
 
 def main():
 	coordinador = Coordinador(1000)
-	#th1 = coordinador.abreTransaccion("incrementarSaldo", 50)
-	#th2 = coordinador.abreTransaccion("obtenerSaldo")
-	#th3 = coordinador.abreTransaccion("depositar", 50)
-	th4 = coordinador.abreTransaccion("retirar", 50)
-	#time.sleep(0.5)
-	th5 = coordinador.abreTransaccion("depositar",100)
-	#time.sleep(0.5)
-	th6 = coordinador.abreTransaccion("incrementarSaldo",100)
-	#time.sleep(0.5)
-	th7 = coordinador.abreTransaccion("obtenerSaldo")
-	
-	#coordinador.cierraTransaccion(th1)
-	#coordinador.cierraTransaccion(th2)
-	#coordinador.cierraTransaccion(th3)
-	coordinador.cierraTransaccion(th4)
-	coordinador.cierraTransaccion(th5)
-	coordinador.cierraTransaccion(th6)
-	coordinador.cierraTransaccion(th7)
+	coordinador.cierraTransaccion(coordinador.abreTransaccion("retirar", 50))
+	coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 50))
+	coordinador.cierraTransaccion(coordinador.abreTransaccion("incrementarSaldo",100))
+	coordinador.cierraTransaccion(coordinador.abreTransaccion("obtenerSaldo"))
+	coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 25))
 
-	time.sleep(1)
-	print('delay 1 seg')
-	coordinador.cierraTransaccion(th6)
 """
 	th1 = coordinador.abreTransaccion("incrementarSaldo", 100)
 	#th2 = coordinador.abreTransaccion("incrementarSaldo", 200)
