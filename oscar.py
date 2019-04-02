@@ -15,7 +15,6 @@ class Coordinador():
 		self.resultado = self.saldo + self.saldo * (porcentaje * 0.01)
 		#print (porcentaje, self.resultado, self.saldo)
 
-
 	def depositar(self, monto):
 		self.resultado = self.saldo + monto
 
@@ -60,6 +59,8 @@ class Coordinador():
 		#print('cierraTransaccion',self.resultado)
 		if self.resultado == -1:
 			print "No puedes retirar tanto"
+			#TODO:
+			#this.abortaTransaccion()
 		
 		else:
 			self.saldo = self.resultado
@@ -73,7 +74,20 @@ class Coordinador():
 
 def main():
 	coordinador = Coordinador(1000)
-	coordinador.cierraTransaccion(coordinador.abreTransaccion("retirar", 50))
+
+	#TODO CAMBIOS 
+	
+	# t1 = coordinador.abreTransaccion()
+	# t1.deposita(100)
+	# t1.retira(50)
+	# t1.cierraTransaccion()
+	
+	# t2 = coordinador.abreTransaccion()
+	# t2.deposita(100)
+	# t2.retira(50)
+	# t2.cierraTransaccion()
+	
+	coordinador.cierraTransaccion(t1)
 	coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 50))
 
 	# for i in range(100):
