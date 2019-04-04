@@ -1,76 +1,81 @@
 import threading
 import time
 
-class Coordinador():
-	saldo = 0
-	def __init__(self,saldo_inicial):
-		self.saldo = saldo_inicial
-		self.hilos = {}
-		self.resultado = 0
-	
+saldo_global = 0
+lock = threading.Lock()
+
+class Transaccion():
+	def __init__(self):
+		self.saldo = saldo_global
+
+	def get_saldo(self):
+		return self.saldo
+
 	def obtenerSaldo(self):
-		self.resultado = self.saldo
+		self.saldo = saldo_global
 
 	def incrementarSaldo(self, porcentaje):
-		self.resultado = self.saldo + self.saldo * (porcentaje * 0.01)
-		#print (porcentaje, self.resultado, self.saldo)
+		self.saldo = self.saldo + self.saldo * (porcentaje * 0.01)
+		#print (porcentaje, self.saldo, saldo_global)
 
 	def depositar(self, monto):
-		self.resultado = self.saldo + monto
+		self.saldo = self.saldo + monto
 
 	def retirar(self,monto):
 		aux = self.saldo - monto
 
 		if aux >= 0: 
-			self.resultado = aux
-
+			self.saldo = aux
 		else:
-			self.resultado = -1
+			self.saldo = -1
+
+
+
+
+class Coordinador():
+	def __init__(self,saldo_inicial):
+		#self.saldo = saldo_global
+		self.hilos = {}
+		self.tmp = 0
 
 	def abreTransaccion(self, funcion, args_p = None):
-		hilo = {}
-		print(funcion, args_p)
-		if funcion == "obtenerSaldo":
-			hilo = threading.Thread(target=self.obtenerSaldo)
-		
-		elif funcion == "incrementarSaldo":
-			hilo = threading.Thread(target=self.incrementarSaldo, args=(args_p,))
-		
-		elif funcion == "depositar":
-			hilo = threading.Thread(target=self.depositar, args=(args_p,))
-		
-		elif funcion == "retirar":
-			hilo = threading.Thread(target=self.retirar, args=(args_p,))
-		else:
-			print "No entra"
-		
-		hilo_name = hilo.getName()
-		self.hilos[hilo_name] = hilo
-		#print(self.hilos)
-		return hilo_name
+		# LOCK RECURSO GLOBAL lock(saldo_global)
+		lock.acquire()
+		t = Transaccion()
+		return t 
+
 
 
 	def cierraTransaccion(self, TID):
+
+
+    	lock.release() # release lock, no matter what
+
 		hilo = self.hilos[TID]
 		
 		hilo.start()
 		#hilo.join()
 		
-		#print('cierraTransaccion',self.resultado)
-		if self.resultado == -1:
+		#print('cierraTransaccion',self.tmp)
+		if self.tmp == -1:
 			print "No puedes retirar tanto"
 			#TODO:
 			#this.abortaTransaccion()
 		
 		else:
-			self.saldo = self.resultado
-			print "nuevo saldo: " + str(self.saldo) + '\n'
+			#saldo_global = self.tmp
+			saldo_global = self.tmp
+			print "nuevo saldo: " + str(saldo_global) + '\n'
 			del self.hilos[TID]
 
 	def abortaTransaccion(TID):
 		del self.hilos[TID]
 		print str(TID) + " abortado"
 
+
+	def execHilos(self,):
+		for hilo in self.hilos:
+			hilo.start()
 
 def main():
 	coordinador = Coordinador(1000)
@@ -87,9 +92,6 @@ def main():
 	# t2.retira(50)
 	# t2.cierraTransaccion()
 	
-	coordinador.cierraTransaccion(t1)
-	coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 50))
-
 	# for i in range(100):
 	# 	coordinador.cierraTransaccion(coordinador.abreTransaccion("retirar", 1))
 	# 	coordinador.cierraTransaccion(coordinador.abreTransaccion("depositar", 1))
