@@ -1,0 +1,92 @@
+import socket
+import time
+import json
+import threading
+
+lock = threading.Lock()
+
+server_address = ('localhost', 32132)
+
+class Client():
+    def __init__(self,name):
+        self.name = name
+        self.sock = None
+        self.token = None
+        self.request = { 'token': None, 'action': None, 'params':None }
+        #self.open_session()
+        
+    def open_sock(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect(server_address)
+
+    def close_sock(self):
+        self.sock.close()
+
+    def open_session(self):
+        self.open_sock()
+        self.request = {'open':True}
+        json_str = json.dumps(self.request, separators=(',', ':'))
+        self.sock.send(json_str)
+        token = self.sock.recv(14096)
+        print('open sess',self.token,self.name)
+        if(len(token) == 6):
+            self.token = token
+        else:
+            self.token = None
+
+    def close_session(self):
+        print('close')
+        self.request = {'token':self.token, 'action':'close_session', 'params':None, 'open':False}
+        json_str = json.dumps(self.request, separators=(',', ':'))
+        self.sock.send(json_str)
+        reply = self.sock.recv(14096)
+        self.close_sock()
+        print('close_session', reply, self.name)
+
+    def get_balance(self):
+        #self.open_sock()
+        self.request = {'token':self.token, 'action':'get_balance', 'params':None,'open':False}
+        json_str = json.dumps(self.request, separators=(',', ':'))
+        self.sock.send(json_str)
+        reply = self.sock.recv(14096)
+        print('Get Balance: ',self.name,reply,self.token)
+        self.close_sock()
+        
+    def increase(self, porcentage):
+        #self.open_sock()
+        self.request = {'token':self.token, 'action':'increase', 'params':porcentage,'open':False}
+        json_str = json.dumps(self.request, separators=(',', ':'))
+        self.sock.send(json_str)
+        reply = self.sock.recv(14096)
+        print('Increase: ',self.name,reply,self.token)
+        self.close_sock()
+
+    def deposit(self, amount):
+        #self.open_sock()
+        self.request = {'token':self.token, 'action':'deposit', 'params':amount,'open':False}
+        json_str = json.dumps(self.request, separators=(',', ':'))
+        self.sock.send(json_str)
+        reply = self.sock.recv(14096)
+        print('Deposit: ',self.name, reply,self.token)
+        self.close_sock()
+
+    def withdraw(self, amount):
+        #self.open_sock()
+        self.request = {'token':self.token, 'action':'withdraw', 'params':amount, 'open':False}
+        json_str = json.dumps(self.request, separators=(',', ':'))
+        self.sock.send(json_str)
+        reply = self.sock.recv(14096)
+        print('Withdraw: ',self.name,reply,self.token)
+        self.close_sock()
+
+    
+a = Client('Alice')
+#x = Client('Bob')
+time.sleep(0.5)
+#a.get_balance()
+#x.get_balance()
+
+#a.increase(50)
+
+# a.withdraw(10)
+a.close_session()
