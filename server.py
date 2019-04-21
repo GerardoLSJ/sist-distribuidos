@@ -5,7 +5,7 @@ from coordinator import Coordinator
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Bind the socket to the port
-server_address = ('localhost', 32132)
+server_address = ('localhost', 42444)
 print('Starting up on {} port {}'.format(*server_address))
 sock.bind(server_address)
 
@@ -22,7 +22,8 @@ while True:
     if data_string:
         #Parsed Json
         p = json.loads(data_string)
-        print(p)
+        #connection.sendall(str(p))
+        #print(p)
         if(p['open'] == True):
             print('open_trans')
             r = c.open_trans()
@@ -40,6 +41,8 @@ while True:
             r = c.do(p['token'], p['action'], p['params'] )
             print(r)
             connection.sendall(str(r))
+        else:
+            connection.sendall(str('ERROR'))
 
     else:
         print('no data from', client_address)
