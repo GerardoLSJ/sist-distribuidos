@@ -16,13 +16,13 @@ class Client():
         #self.open_session()
         
     def open_sock(self):
-        print('open sock')
+        #print('open sock')
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(server_address)
 
     def close_sock(self):
         self.sock.close()
-        print('close sock')
+        #print('close sock')
 
     def open_session(self):
         self.open_sock()
@@ -40,7 +40,7 @@ class Client():
         self.close_sock()
 
     def close_session(self):
-        print('close')
+        #print('close')
         self.open_sock()
         self.request = {'token':self.token, 'action':'close_session', 'params':None, 'open':False}
         json_str = json.dumps(self.request, separators=(',', ':'))
@@ -88,17 +88,15 @@ class Client():
     
 
 x = Client('Bob')
-x.open_session()
-x.increase(50)
-x.get_balance()
-x.close_session()
-
-time.sleep(2)
-
 a = Client('Alice')
+x.open_session()
 a.open_session()
 a.withdraw(100)
-a.close_session()
 
+x.get_balance()
+a.get_balance()
+
+#a.close_session()
+x.close_session()
 # #a.withdraw(10)
-# a.close_session()
+a.close_session()

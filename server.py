@@ -30,12 +30,6 @@ while True:
             print('open_trans data',r)
             connection.sendall(str(r))
 
-        # elif(p['token'] == None and p['action']=='get_balance'):
-        #     print('DIRTY READ')
-        #     r = c.do(p['token'], p['action'] )
-        #     print(r)
-        #     connection.sendall(str(r))
-
         elif(p['token']):
             print('Do::')
             r = c.do(p['token'], p['action'], p['params'] )

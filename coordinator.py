@@ -55,11 +55,9 @@ class Coordinator():
         
     def do(self, token, move, params=None):
         global is_locked,current_token
-        print('do::token',token, 'do::curr',current_token)
-        print(move,token,is_locked)
-        if(token == None and is_locked == False and move == 'get_balance'):
+        if(token != current_token and is_locked == False and move == 'get_balance'):
             t = Transaction(self.balance)
-            return self.close_trans(self.balance)
+            return t.get_balance()
         
         if(token != current_token):
             print(':: TOKEN EXPIRED SERVER ::' , token )
@@ -97,7 +95,11 @@ class Coordinator():
             print('coord::close_session')
             t = Transaction(self.balance)
             new_balance = t.get_balance()
-            return self.close_trans(new_balance)
+            if(new_balance >= 0):
+                return self.close_trans(new_balance)
+            else:
+                return self.abort_trans('Not Enough Money!')
+
 
     def close_trans(self,new_balance):
         global is_locked,current_token
