@@ -5,7 +5,7 @@ import threading
 
 lock = threading.Lock()
 
-server_address = ('localhost', 42444)
+server_address = ('localhost', 4444)
 
 class Client():
     def __init__(self,name):
@@ -87,16 +87,17 @@ class Client():
 
     
 
-x = Client('Bob')
+#x = Client('Bob')
 a = Client('Alice')
-x.open_session()
+#x.open_session()
 a.open_session()
 a.withdraw(100)
 
-x.get_balance()
+#x.get_balance()
 a.get_balance()
 
 #a.close_session()
-x.close_session()
-# #a.withdraw(10)
+#x.close_session()
+a.withdraw(10)
+a.get_balance()
 a.close_session()

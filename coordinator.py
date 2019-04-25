@@ -3,7 +3,13 @@ import time
 import socket
 import os
 import threading
+import signal
 
+"""TODO:
+TIMEOUT DE 2 SEGUNDOS
+msg de timeout
+
+"""
 
 #Global Variables 
 balance = 100.0
@@ -43,9 +49,19 @@ class Coordinator():
         global balance
         self.balance = balance # global
 
+    def timeout(self):
+        #signal.signal(signal.SIGALRM, self.timeout_handler)
+        print('TODO: TIMEOUT ')
+        #signal.alarm(2)
+
+    def timeout_handler(self, signal, frame):
+        print('timeou')
+        raise Exception('Time is up!')
+
     def open_trans(self):
         global is_locked,current_token
         print('islocked',is_locked)
+        self.timeout() # INIT TIMEOUT
         if(is_locked):
             return self.abort_trans('Resource is being used by other User')
         else:
@@ -116,6 +132,11 @@ class Coordinator():
         return token
 
     def abort_trans(self,message):
+        global is_locked,current_token
+        print('coord::abort_trans')
+        is_locked = False
+        current_token = None
+        self.balance = balance # RESET BALANCE
         return message
         
 

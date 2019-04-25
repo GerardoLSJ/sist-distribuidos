@@ -5,7 +5,7 @@ from coordinator import Coordinator
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Bind the socket to the port
-server_address = ('localhost', 42444)
+server_address = ('localhost', 4444)
 print('Starting up on {} port {}'.format(*server_address))
 sock.bind(server_address)
 
