@@ -92,12 +92,19 @@ a = Client('Alice')
 #x.open_session()
 a.open_session()
 a.withdraw(100)
-
-#x.get_balance()
 a.get_balance()
 
-#a.close_session()
-#x.close_session()
-a.withdraw(10)
-a.get_balance()
+time.sleep(3)
 a.close_session()
+
+x = Client('Bob')
+x.open_session()
+x.get_balance()
+
+# a.get_balance()
+
+# #a.close_session()
+# #x.close_session()
+# #a.withdraw(10)
+# a.get_balance()
+# a.close_session()

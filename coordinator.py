@@ -4,7 +4,7 @@ import socket
 import os
 import threading
 import signal
-
+from datetime import timedelta 
 """TODO:
 TIMEOUT DE 2 SEGUNDOS
 msg de timeout
@@ -14,6 +14,7 @@ msg de timeout
 #Global Variables 
 balance = 100.0
 current_token = None
+expiration = None
 is_locked = False
 lock = threading.Lock()
 
@@ -50,13 +51,11 @@ class Coordinator():
         self.balance = balance # global
 
     def timeout(self):
-        #signal.signal(signal.SIGALRM, self.timeout_handler)
+        global expiration
+        expiration = time.time()
+        expiration += 2.0
         print('TODO: TIMEOUT ')
-        #signal.alarm(2)
 
-    def timeout_handler(self, signal, frame):
-        print('timeou')
-        raise Exception('Time is up!')
 
     def open_trans(self):
         global is_locked,current_token
@@ -74,11 +73,15 @@ class Coordinator():
         if(token != current_token and is_locked == False and move == 'get_balance'):
             t = Transaction(self.balance)
             return t.get_balance()
-        
+
         if(token != current_token):
-            print(':: TOKEN EXPIRED SERVER ::' , token )
+            print(':: TIMEOUT EXPIRED SERVER ::' )
             return self.abort_trans('Token Expired!')
         
+        if(expiration < time.time() ):
+            print(':: TOKEN EXPIRED SERVER ::' , token )
+            return self.abort_trans('Timeout, session expired')
+
         if(move == 'get_balance'):
             print('coord::balance')
             t = Transaction(self.balance)
